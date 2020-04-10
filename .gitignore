@@ -8,3 +8,10 @@
 *.lock
 *.bin
 *.lock
+.gradle/5.6.4/executionHistory/executionHistory.bin
+.gradle/5.6.4/executionHistory/executionHistory.lock
+.gradle/5.6.4/fileHashes/fileHashes.bin
+.gradle/5.6.4/fileHashes/fileHashes.lock
+.gradle/5.6.4/fileHashes/resourceHashesCache.bin
+.gradle/5.6.4/javaCompile/javaCompile.lock
+.gradle/buildOutputCleanup/buildOutputCleanup.lock
