@@ -160,6 +160,4 @@
     <TextView android:id="@+id/errorText" android:layout_width="wrap_content"
         android:layout_height="wrap_content" android:layout_centerInParent="true"
         android:visibility="gone" android:text="Something went wrong"/>
-
-
 </RelativeLayout>
