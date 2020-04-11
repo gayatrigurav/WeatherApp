@@ -4,13 +4,22 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:padding="25dp"
-    android:background="@drawable/bg_gradient">
+    android:background="@drawable/bg_gradient"
+    >
+
+    <include
+        layout="@layout/toolbar_layout"
+        />
 
     <RelativeLayout android:id="@+id/mainContainer" android:layout_width="match_parent"
-        android:layout_height="match_parent" android:visibility="visible">
+        android:layout_height="match_parent" android:visibility="visible"
+        android:layout_below="@+id/toolBar"
+        >
+
         <LinearLayout android:id="@+id/addressContainer" android:layout_width="match_parent"
             android:layout_height="wrap_content" android:orientation="vertical"
-            android:gravity="center">
+            android:gravity="center"
+            >
             <TextView android:id="@+id/address" android:layout_width="wrap_content"
                 android:layout_height="wrap_content" android:textSize="24dp"
                 android:text="DHAKA, BD"/>
@@ -151,6 +160,4 @@
     <TextView android:id="@+id/errorText" android:layout_width="wrap_content"
         android:layout_height="wrap_content" android:layout_centerInParent="true"
         android:visibility="gone" android:text="Something went wrong"/>
-
-
 </RelativeLayout>
