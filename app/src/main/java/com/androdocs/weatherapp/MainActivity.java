@@ -15,9 +15,23 @@ import org.json.JSONObject;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
+
+import android.content.Intent;
+import androidx.core.view.MenuItemCompat;
+import androidx.appcompat.app.AppCompatActivity;
+import android.os.Bundle;
+import androidx.appcompat.widget.ShareActionProvider;
+import androidx.appcompat.widget.Toolbar;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
+import android.view.View;
+import android.widget.Toast;
+
 //Updates from citysearchapi branch
 public class MainActivity extends AppCompatActivity {
 
+    private Toolbar toolbar;
     String CITY = "omaha,us";
     String API = "f598f803c981ba647994faad4a323a5f";
 
@@ -28,6 +42,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        toolbar = (Toolbar) findViewById(R.id.toolBar);
+        setSupportActionBar(toolbar);
 
         addressTxt = findViewById(R.id.address);
         updated_atTxt = findViewById(R.id.updated_at);
@@ -43,6 +59,60 @@ public class MainActivity extends AppCompatActivity {
 
         new weatherTask().execute();
     }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu){
+
+        MenuInflater menuInflater = getMenuInflater();
+        menuInflater.inflate(R.menu.app_bar_menu,menu);
+
+        MenuItem.OnActionExpandListener onActionExpandListener = new MenuItem.OnActionExpandListener() {
+            @Override
+            public boolean onMenuItemActionExpand(MenuItem menuItem) {
+                Toast.makeText(MainActivity.this,"Action View Expanded...",Toast.LENGTH_SHORT).show();
+                return true;
+            }
+
+            @Override
+            public boolean onMenuItemActionCollapse(MenuItem menuItem) {
+                Toast.makeText(MainActivity.this,"Action View Collapse...",Toast.LENGTH_SHORT).show();
+                return true;
+            }
+        };
+
+        MenuItem searchItem = menu.findItem(R.id.action_search);
+        searchItem.setOnActionExpandListener(onActionExpandListener);
+
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item){
+
+        switch(item.getItemId())
+        {
+            case R.id.action_favorite:
+                Toast.makeText(this, "Favorite option selected",Toast.LENGTH_SHORT).show();
+                return true;
+
+            case R.id.action_settings:
+                Toast.makeText(this, "Settings option selected",Toast.LENGTH_SHORT).show();
+                return true;
+
+            case R.id.action_share:
+                Toast.makeText(this, "Share option selected",Toast.LENGTH_SHORT).show();
+                return true;
+
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+
+    }
+
+    public void startSecondActivity(View view) {
+        startActivity(new Intent(this,SecondActivity.class));
+    }
+
 
     class weatherTask extends AsyncTask<String, Void, String> {
         @Override
