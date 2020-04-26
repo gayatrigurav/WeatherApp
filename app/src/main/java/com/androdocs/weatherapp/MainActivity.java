@@ -1,14 +1,6 @@
 package com.androdocs.weatherapp;
 
-import android.os.AsyncTask;
-import android.os.Bundle;
-import android.view.View;
-import android.widget.TextView;
-
-import androidx.appcompat.app.AppCompatActivity;
-
 import com.androdocs.httprequest.HttpRequest;
-
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -16,24 +8,28 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
-import android.content.Intent;
-import androidx.core.view.MenuItemCompat;
 import androidx.appcompat.app.AppCompatActivity;
-import android.os.Bundle;
-import androidx.appcompat.widget.ShareActionProvider;
+import android.content.Intent;
+import androidx.appcompat.widget.SearchView;
 import androidx.appcompat.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.Toast;
+import android.app.SearchManager;
+import android.os.AsyncTask;
+import android.os.Bundle;
+import android.view.View;
+import android.widget.TextView;
 
-//Updates from citysearchapi branch
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements SearchView.OnQueryTextListener{
 
     private Toolbar toolbar;
-    String CITY = "omaha,us";
+    public String CITY = "omaha,us";
     String API = "f598f803c981ba647994faad4a323a5f";
+    SearchView searchView;
+    WeatherTask weatherTask;
+
 
     TextView addressTxt, updated_atTxt, statusTxt, tempTxt, temp_minTxt, temp_maxTxt, sunriseTxt,
             sunsetTxt, windTxt, pressureTxt, humidityTxt;
@@ -57,7 +53,7 @@ public class MainActivity extends AppCompatActivity {
         pressureTxt = findViewById(R.id.pressure);
         humidityTxt = findViewById(R.id.humidity);
 
-        new weatherTask().execute();
+        new WeatherTask().execute();
     }
 
     @Override
@@ -70,20 +66,40 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public boolean onMenuItemActionExpand(MenuItem menuItem) {
                 Toast.makeText(MainActivity.this,"Action View Expanded...",Toast.LENGTH_SHORT).show();
+
                 return true;
             }
 
             @Override
             public boolean onMenuItemActionCollapse(MenuItem menuItem) {
                 Toast.makeText(MainActivity.this,"Action View Collapse...",Toast.LENGTH_SHORT).show();
+                if(CITY.isEmpty())
+                    CITY="omaha,us";
+                new WeatherTask().execute();
+                findViewById(R.id.errorText).setVisibility(View.INVISIBLE);
                 return true;
             }
         };
 
         MenuItem searchItem = menu.findItem(R.id.action_search);
         searchItem.setOnActionExpandListener(onActionExpandListener);
+        SearchView searchView = (SearchView) searchItem.getActionView();
+        searchView.setOnQueryTextListener(this);
 
         return true;
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
+            String query = intent.getStringExtra(SearchManager.QUERY);
+            Toast.makeText(this, "Searching by: "+ query, Toast.LENGTH_SHORT).show();
+
+        } else if (Intent.ACTION_VIEW.equals(intent.getAction())) {
+            String uri = intent.getDataString();
+            Toast.makeText(this, "Suggestion: "+ uri, Toast.LENGTH_SHORT).show();
+        }
     }
 
     @Override
@@ -113,8 +129,22 @@ public class MainActivity extends AppCompatActivity {
         startActivity(new Intent(this,SecondActivity.class));
     }
 
+    @Override
+    public boolean onQueryTextSubmit(String query) {
+        CITY = query;
+        new WeatherTask().execute();
+        return true;
+    }
 
-    class weatherTask extends AsyncTask<String, Void, String> {
+    @Override
+    public boolean onQueryTextChange(String newText) {
+        CITY = newText;
+        new WeatherTask().execute();
+        return true;
+    }
+
+
+    class WeatherTask extends AsyncTask<String, Void, String> {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
@@ -126,7 +156,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
         protected String doInBackground(String... args) {
-            String response = HttpRequest.excuteGet("https://api.openweathermap.org/data/2.5/weather?q=" + CITY + "&units=metric&appid=" + API);
+            String response = HttpRequest.excuteGet("https://api.openweathermap.org/data/2.5/weather?q=" + CITY + "&units=imperial&appid=" + API);
             return response;
         }
 
@@ -142,10 +172,10 @@ public class MainActivity extends AppCompatActivity {
                 JSONObject weather = jsonObj.getJSONArray("weather").getJSONObject(0);
 
                 Long updatedAt = jsonObj.getLong("dt");
-                String updatedAtText = "Updated at: " + new SimpleDateFormat("dd/MM/yyyy hh:mm a", Locale.ENGLISH).format(new Date(updatedAt * 1000));
-                String temp = main.getString("temp") + "°C";
-                String tempMin = "Min Temp: " + main.getString("temp_min") + "°C";
-                String tempMax = "Max Temp: " + main.getString("temp_max") + "°C";
+                String updatedAtText = "Updated at: " + new SimpleDateFormat("MM/dd/yyyy hh:mm a", Locale.ENGLISH).format(new Date(updatedAt * 1000));
+                String temp = main.getString("temp") + "°F";
+                String tempMin = "Min Temp: " + main.getString("temp_min") + "°F";
+                String tempMax = "Max Temp: " + main.getString("temp_max") + "°F";
                 String pressure = main.getString("pressure");
                 String humidity = main.getString("humidity");
 
@@ -174,10 +204,9 @@ public class MainActivity extends AppCompatActivity {
                 findViewById(R.id.loader).setVisibility(View.GONE);
                 findViewById(R.id.mainContainer).setVisibility(View.VISIBLE);
 
-
             } catch (JSONException e) {
                 findViewById(R.id.loader).setVisibility(View.GONE);
-                findViewById(R.id.errorText).setVisibility(View.VISIBLE);
+                findViewById(R.id.errorText).setVisibility(View.INVISIBLE);
             }
 
         }

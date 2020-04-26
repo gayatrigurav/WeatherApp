@@ -9,4 +9,5 @@
     <string name="start_second_activity">Start Second Activity</string>
     <string name="action_search">Search</string>
     <string name="share">Share</string>
+    <string name="hint_search">City</string>
 </resources>
