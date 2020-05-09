@@ -6,26 +6,33 @@
 
     <item android:id="@+id/action_search"
         android:title="@string/action_search"
-        android:icon="@mipmap/ic_search_black"
+        android:icon="@mipmap/search_white"
         app:showAsAction="ifRoom|collapseActionView"
         app:actionViewClass="androidx.appcompat.widget.SearchView" />
 
-    <item android:id="@+id/action_share"
+    <item
+        android:id="@+id/action_gps"
+        android:title="@string/location"
+        android:icon="@mipmap/baseline_gps_fixed_white"
+        app:showAsAction="ifRoom"
+        />
+
+   <!-- <item android:id="@+id/action_share"
         android:title="@string/share"
         android:icon="@mipmap/ic_share"
         app:showAsAction="ifRoom"
-        app:actionProviderClass="androidx.appcompat.widget.ShareActionProvider"/>
+        app:actionProviderClass="androidx.appcompat.widget.ShareActionProvider"/> -->
 
     <!-- "Mark Favorite", should appear as action button if possible -->
-    <item
+    <!--  <item
         android:id="@+id/action_favorite"
         android:icon="@mipmap/baseline_favorite_black_48dp"
         android:title="@string/action_favorite"
-        app:showAsAction="ifRoom"/>
+        app:showAsAction="ifRoom"/>-->
 
     <!-- Settings, should always be in the overflow -->
-    <item android:id="@+id/action_settings"
-        android:title="@string/action_settings"
-        app:showAsAction="never"/>
+    <!-- <item android:id="@+id/action_settings"
+       android:title="@string/action_settings"
+       app:showAsAction="never"/>-->
 
 </menu>
